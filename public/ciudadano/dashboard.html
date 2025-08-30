@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ciudadano - Decisiones Ciudadanas</title>
+    <link rel="stylesheet" href="../assets/css/ciudadano.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-circle">DC</div>
+                    <span class="app-name">Decisiones Ciudadanas</span>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-avatar">
+                        <span id="userInitials">JP</span>
+                    </div>
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <span id="userName">Juan Pérez</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <div class="user-menu" id="userMenu">
+                        <a href="#" onclick="logout()">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="welcome-section">
+                <h1 id="welcomeMessage">¡Bienvenido, Juan!</h1>
+                <p class="welcome-subtitle">Participa en las decisiones de tu comunidad y haz que tu voz sea escuchada</p>
+            </div>
+
+            <div class="filters-section">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Buscar propuestas..." 
+                        class="search-input"
+                    >
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.67"/>
+                    </svg>
+                </div>
+
+                <div class="filter-controls">
+                    <select id="estadoFilter" class="filter-select">
+                        <option value="">Todos</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Revision">En Revisión</option>
+                        <option value="Aprobada">Aprobada</option>
+                        <option value="En Ejecucion">En Ejecución</option>
+                        <option value="Completada">Completada</option>
+                        <option value="Rechazada">Rechazada</option>
+                    </select>
+
+                    <select id="categoriaFilter" class="filter-select">
+                        <option value="">Todas</option>
+                        <option value="Infraestructura">Infraestructura</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Salud">Salud</option>
+                        <option value="Educacion">Educación</option>
+                        <option value="Medio Ambiente">Medio Ambiente</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Cultura y Recreacion">Cultura y Recreación</option>
+                        <option value="Servicios Publicos">Servicios Públicos</option>
+                        <option value="Desarrollo Social">Desarrollo Social</option>
+                        <option value="Tecnologia">Tecnología</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="propuestas-grid" id="propuestasGrid">
+                <!-- Las propuestas se cargarán dinámicamente aquí -->
+                <div class="loading-message">
+                    Cargando propuestas...
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/ciudadano.js"></script>
+</body>
+</html>

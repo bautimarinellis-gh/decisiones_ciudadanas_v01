@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear nueva propuesta - Decisiones Ciudadanas</title>
+    <link rel="stylesheet" href="../assets/css/crear-propuesta.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <button class="back-btn" onclick="goBack()">← Volver</button>
+            <h1>Nueva propuesta</h1>
+        </header>
+
+        <div class="form-container">
+            <div class="form-card">
+                <h2>Crear nueva propuesta</h2>
+                <p class="form-subtitle">Completa los datos para registrar la propuesta. Asegúrate de ser claro y específico en la propuesta.</p>
+
+                <form id="propuestaForm" class="propuesta-form">
+                    <div class="form-group">
+                        <label for="titulo">Título de la propuesta *</label>
+                        <input 
+                            type="text" 
+                            id="titulo" 
+                            name="titulo" 
+                            placeholder="Ej: Mejora del alumbrado público en Plaza San Martín"
+                            required
+                        >
+                        <div class="char-counter">
+                            <span id="tituloCounter">0</span>/100 caracteres
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción detallada *</label>
+                        <textarea 
+                            id="descripcion" 
+                            name="descripcion" 
+                            placeholder="Describe la propuesta de manera detallada. Incluye el problema que quieres resolver, la solución propuesta y los beneficios para la comunidad."
+                            rows="6"
+                            required
+                        ></textarea>
+                        <div class="char-counter">
+                            <span id="descripcionCounter">0</span>/1000 caracteres
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="barrio">Barrio *</label>
+                            <select id="barrio" name="barrio" required>
+                                <option value="">Selecciona un barrio</option>
+                                <option value="Centro">Centro</option>
+                                <option value="Norte">Norte</option>
+                                <option value="Sur">Sur</option>
+                                <option value="Este">Este</option>
+                                <option value="Oeste">Oeste</option>
+                                <option value="Ninguno">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoria">Categoría *</label>
+                            <select id="categoria" name="categoria" required>
+                                <option value="">Selecciona una categoría</option>
+                                <option value="Infraestructura">Infraestructura</option>
+                                <option value="Seguridad">Seguridad</option>
+                                <option value="Salud">Salud</option>
+                                <option value="Educacion">Educación</option>
+                                <option value="Medio Ambiente">Medio Ambiente</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Cultura y Recreacion">Cultura y Recreación</option>
+                                <option value="Servicios Publicos">Servicios Públicos</option>
+                                <option value="Desarrollo Social">Desarrollo Social</option>
+                                <option value="Tecnologia">Tecnología</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Antes de enviar la propuesta:</h3>
+                        <ul class="checklist">
+                            <li>• Asegúrate de que la propuesta sea clara y específica</li>
+                            <li>• Verifica que no exista una propuesta similar</li>
+                            <li>• Incluye todos los detalles necesarios</li>
+                            <li>• La propuesta será revisada por el equipo municipal</li>
+                            <li>• Recibirás notificaciones sobre el estado de la propuesta</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="goBack()">Cancelar</button>
+                        <button type="submit" class="btn-primary">Publicar propuesta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/crear-propuesta.js"></script>
+</body>
+</html>
