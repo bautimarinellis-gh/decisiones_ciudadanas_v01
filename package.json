@@ -15,10 +15,22 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.0"
+    "mongoose": "^8.18.0",
+    "nodemailer": "^7.0.6"
+  },
+  "_dependenciesInfo": {
+    "bcrypt": "LIBRERÍA - Encriptación segura de contraseñas usando algoritmos de hash",
+    "dotenv": "LIBRERÍA - Carga variables de entorno desde archivo .env",
+    "express": "FRAMEWORK - Framework web minimalista para Node.js, maneja rutas y middleware",
+    "jsonwebtoken": "LIBRERÍA - Creación y verificación de tokens JWT para autenticación",
+    "mongoose": "LIBRERÍA/ODM - Object Document Mapper para MongoDB, define esquemas y modelos"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "_devDependenciesInfo": {
+    "nodemon": "HERRAMIENTA - Reinicia automáticamente el servidor cuando detecta cambios en el código"
   }
 }

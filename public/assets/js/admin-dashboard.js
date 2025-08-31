@@ -425,10 +425,32 @@ function toggleUserMenu() {
 
 // Ya no necesitamos checkUrlHash porque todo está en una vista
 
-function logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    window.location.href = '/login.html';
+async function logout() {
+    try {
+        const token = localStorage.getItem('authToken');
+        
+        if (token) {
+            // Llamar al endpoint de logout para invalidar el token
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error al hacer logout:', error);
+    } finally {
+        // Limpiar datos locales siempre
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
+        window.location.href = '/login.html';
+    }
+}
+
+function changePassword() {
+    window.location.href = '/cambiar-password.html';
 }
 
 // Cerrar modal al hacer clic fuera

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import usuarioSchema from '../models/usuarioSchema.js'
+import { isTokenBlacklisted } from '../controllers/authController.js'
 
 const Usuario = mongoose.model('Usuario', usuarioSchema)
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_testing_123' 
@@ -15,6 +16,14 @@ export const authenticateToken = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 message: 'Token de acceso requerido'
+            })
+        }
+
+        // Verificar si el token está en la blacklist
+        if (isTokenBlacklisted(token)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token invalidado. Inicia sesión nuevamente'
             })
         }
 

@@ -8,6 +8,7 @@ import usuarioRoutes from './routes/usuarioRoute.js'
 import authRoutes from './routes/authRoute.js'
 import votoRoutes from './routes/votoRoute.js'
 import comentarioRoutes from './routes/comentarioRoute.js'
+import { generalApiLimiter } from './middleware/rateLimitMiddleware.js'
 
 dotenv.config()
 
@@ -19,6 +20,9 @@ const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Rate limiting general para toda la API
+app.use('/api/', generalApiLimiter)
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(path.join(__dirname, '../public')))
