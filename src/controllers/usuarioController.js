@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import usuarioSchema from '../models/usuarioSchema.js'
+import { ResponseFactory } from '../utils/responseFactory.js'
 
 // Crear el modelo de Mongoose
 const Usuario = mongoose.model('Usuario', usuarioSchema)
@@ -9,17 +10,9 @@ const Usuario = mongoose.model('Usuario', usuarioSchema)
 export const getAllUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.find({ activo: true }).select('-password')
-        res.status(200).json({
-            success: true,
-            count: usuarios.length,
-            data: usuarios
-        })
+        res.status(200).json(ResponseFactory.successWithCount(usuarios))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener los usuarios',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener los usuarios', error.message))
     }
 }
 
@@ -29,31 +22,18 @@ export const getUsuarioById = async (req, res) => {
         const { id } = req.params
         
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de usuario no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de usuario no válido'))
         }
 
         const usuario = await Usuario.findOne({ _id: id, activo: true }).select('-password')
         
         if (!usuario) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
-        res.status(200).json({
-            success: true,
-            data: usuario
-        })
+        res.status(200).json(ResponseFactory.success(usuario))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener el usuario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener el usuario', error.message))
     }
 }
 
@@ -66,10 +46,7 @@ export const updateUsuario = async (req, res) => {
         const { nombreCompleto, email, barrio, password, activo, rol } = req.body
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de usuario no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de usuario no válido'))
         }
 
         // Construir objeto de actualización
@@ -96,39 +73,23 @@ export const updateUsuario = async (req, res) => {
         ).select('-password')
 
         if (!usuarioActualizado) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Usuario actualizado exitosamente',
-            data: usuarioActualizado
-        })
+        res.status(200).json(ResponseFactory.success(usuarioActualizado, 'Usuario actualizado exitosamente'))
     } catch (error) {
         if (error.name === 'ValidationError') {
-            return res.status(400).json({
-                success: false,
-                message: 'Error de validación',
-                errors: Object.values(error.errors).map(err => err.message)
-            })
+            return res.status(400).json(ResponseFactory.validationError(
+                Object.values(error.errors).map(err => err.message)
+            ))
         }
 
         if (error.code === 11000) {
             const campo = Object.keys(error.keyValue)[0]
-            return res.status(400).json({
-                success: false,
-                message: `Ya existe un usuario con ese ${campo}`
-            })
+            return res.status(400).json(ResponseFactory.badRequest(`Ya existe un usuario con ese ${campo}`))
         }
 
-        res.status(500).json({
-            success: false,
-            message: 'Error al actualizar el usuario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al actualizar el usuario', error.message))
     }
 }
 
@@ -138,10 +99,7 @@ export const deleteUsuario = async (req, res) => {
         const { id } = req.params
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de usuario no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de usuario no válido'))
         }
 
         // Desactivar en lugar de eliminar
@@ -152,23 +110,12 @@ export const deleteUsuario = async (req, res) => {
         ).select('-password')
 
         if (!usuarioDesactivado) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Usuario desactivado exitosamente',
-            data: usuarioDesactivado
-        })
+        res.status(200).json(ResponseFactory.success(usuarioDesactivado, 'Usuario desactivado exitosamente'))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al desactivar el usuario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al desactivar el usuario', error.message))
     }
 }
 
@@ -184,17 +131,8 @@ export const getUsuariosFiltrados = async (req, res) => {
 
         const usuarios = await Usuario.find(filtro).select('-password')
 
-        res.status(200).json({
-            success: true,
-            count: usuarios.length,
-            filtros: filtro,
-            data: usuarios
-        })
+        res.status(200).json(ResponseFactory.successWithFilters(usuarios, filtro))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener los usuarios filtrados',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener los usuarios filtrados', error.message))
     }
 }

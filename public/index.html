@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#4285f4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Decisiones Ciudadanas">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Decisiones Ciudadanas</title>
+    <link rel="stylesheet" href="assets/css/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">DC</div>
+                <span class="logo-text">Decisiones Ciudadanas</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="#how-it-works" class="nav-link">Cómo funciona</a>
+                <a href="#why" class="nav-link">Por qué DC</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+            </div>
+            
+            <div class="nav-actions" id="nav-actions">
+                <!-- Botones para usuarios no autenticados -->
+                <div class="auth-buttons" id="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Iniciar sesión</a>
+                    <a href="registro.html" class="btn btn-primary">Registrarse</a>
+                </div>
+                
+                <!-- Botón para usuarios autenticados -->
+                <div class="authenticated-user" id="authenticated-user" style="display: none;">
+                    <a href="#" class="btn btn-primary" id="dashboard-btn">Ir al Dashboard</a>
+                </div>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <div class="logo-glow">
+                        <div class="logo-icon-large">DC</div>
+                    </div>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="title-line">Participación</span>
+                    <span class="title-line accent">Democrática</span>
+                </h1>
+                
+                
+                
+                <p class="hero-description">
+                    Únete a la plataforma que conecta ciudadanos con sus representantes. 
+                    Votá, comentá y participá en las decisiones que moldean tu comunidad. 
+                    Construido para una democracia más transparente y participativa.
+                </p>
+                
+
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Cómo funciona</h2>
+            <p class="section-subtitle">Participar en decisiones ciudadanas es simple y directo</p>
+            
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Regístrate</h3>
+                    <p class="step-description">Crea tu cuenta con tu DNI y datos de contacto. Verificación rápida y segura.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m0-7v7m0-7h10a2 2 0 0 1 2 2v3c0 1.1-.9 2-2 2H9m0-7V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Participá</h3>
+                    <p class="step-description">Vota en propuestas y comenta sobre temas de tu interés.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Impactá</h3>
+                    <p class="step-description">Tus votos influyen directamente en las decisiones de tu comunidad.</p>
+                </div>
+            </div>
+            
+
+        </div>
+    </section>
+
+
+
+    <section class="why-dc" id="why">
+        <div class="container">
+            <h2 class="section-title">Por qué Decisiones Ciudadanas</h2>
+            <p class="section-subtitle">La plataforma que democratiza la participación</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Rápido y Simple</h3>
+                        <p class="benefit-description">Participa en segundos. Interfaz intuitiva diseñada para todos los ciudadanos.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Seguro y Verificado</h3>
+                        <p class="benefit-description">Autenticación robusta con DNI. Cada voto es único y verificable.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Comunidad Local</h3>
+                        <p class="benefit-description">Conecta con vecinos y representantes de tu barrio. Decisiones que te afectan directamente.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3h18v18H3zM9 9h6v6H9z"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Transparencia Total</h3>
+                        <p class="benefit-description">Resultados públicos en tiempo real. Cada decisión es transparente y auditable.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Impacto Real</h3>
+                        <p class="benefit-description">Tus votos influyen en decisiones reales. Participación que genera cambios concretos.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="benefit-content">
+                        <h3 class="benefit-title">Diálogo Construido</h3>
+                        <p class="benefit-description">Comenta, debate y construye consensos. La democracia se fortalece con el diálogo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Preguntas Frecuentes</h2>
+            <p class="section-subtitle">Todo lo que necesitas saber sobre Decisiones Ciudadanas</p>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Cómo me registro en la plataforma?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>El registro es simple y rápido. Solo necesitas tu DNI, email, nombre completo y barrio de residencia. El proceso de verificación toma unos minutos y recibirás un email de confirmación.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Es seguro votar en la plataforma?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sí, utilizamos encriptación de extremo a extremo y autenticación robusta. Cada usuario está verificado con su DNI y cada voto es único e irrepetible. Los datos están protegidos con los más altos estándares de seguridad.</p>
+                    </div>
+                </div>
+                
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Cómo se validan los resultados de las votaciones?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Los resultados son transparentes y auditables. Los administradores pueden acceder a reportes detallados y los ciudadanos pueden ver estadísticas públicas de participación.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Qué pasa si olvido mi contraseña?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Puedes recuperar tu contraseña usando el enlace "¿Olvidaste tu contraseña?" en la página de login. Te enviaremos un email con instrucciones para crear una nueva contraseña segura.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Los representantes pueden ver quién votó qué?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No, los votos son anónimos para proteger la privacidad de los ciudadanos. Los representantes solo pueden ver estadísticas agregadas y resultados finales, nunca información individual de votos.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>¿Hay algún costo por usar la plataforma?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No, Decisiones Ciudadanas es completamente gratuita para todos los ciudadanos. Es una herramienta de participación democrática sin costo alguno para los usuarios.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-icon">DC</div>
+                        <span class="logo-text">Decisiones Ciudadanas</span>
+                    </div>
+                    <p class="footer-description">
+                        Democratizando la participación ciudadana a través de tecnología transparente y segura.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Enlaces</h4>
+                    <ul class="footer-links">
+                        <li><a href="#how-it-works">Cómo funciona</a></li>
+                        <li><a href="#why">Por qué DC</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showComingSoon()">Términos de Uso</a></li>
+                        <li><a href="#" onclick="showComingSoon()">Política de Privacidad</a></li>
+                        <li><a href="#" onclick="showComingSoon()">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Decisiones Ciudadanas. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/landing.js"></script>
+</body>
+</html>

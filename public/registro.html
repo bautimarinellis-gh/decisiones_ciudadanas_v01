@@ -76,7 +76,7 @@
                             name="password" 
                             placeholder="Contraseña segura"
                             required
-                            minlength="6"
+                            minlength="8"
                         >
                         <button type="button" class="toggle-password" onclick="togglePassword('password')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -84,6 +84,16 @@
                                 <circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
+                    </div>
+                    <div class="password-requirements">
+                        <p>La contraseña debe tener:</p>
+                        <ul>
+                            <li id="req-length">Al menos 8 caracteres</li>
+                            <li id="req-uppercase">Una letra mayúscula</li>
+                            <li id="req-lowercase">Una letra minúscula</li>
+                            <li id="req-number">Un número</li>
+                            <li id="req-special">Un carácter especial (!@#$%^&*)</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -96,7 +106,7 @@
                             name="confirmPassword" 
                             placeholder="Repite la contraseña"
                             required
-                            minlength="6"
+                            minlength="8"
                         >
                         <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

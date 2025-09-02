@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import propuestaSchema from '../models/propuestaSchema.js'
+import { ResponseFactory } from '../utils/responseFactory.js'
 
 // Crear el modelo de Mongoose
 const Propuesta = mongoose.model('Propuesta', propuestaSchema)
@@ -8,17 +9,9 @@ const Propuesta = mongoose.model('Propuesta', propuestaSchema)
 export const getAllPropuestas = async (req, res) => {
     try {
         const propuestas = await Propuesta.find()
-        res.status(200).json({
-            success: true,
-            count: propuestas.length,
-            data: propuestas
-        })
+        res.status(200).json(ResponseFactory.successWithCount(propuestas))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener las propuestas',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener las propuestas', error.message))
     }
 }
 
@@ -29,31 +22,18 @@ export const getPropuestaById = async (req, res) => {
         
         // Validar si el ID es válido
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta no válido'))
         }
 
         const propuesta = await Propuesta.findById(id)
         
         if (!propuesta) {
-            return res.status(404).json({
-                success: false,
-                message: 'Propuesta no encontrada'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Propuesta no encontrada'))
         }
 
-        res.status(200).json({
-            success: true,
-            data: propuesta
-        })
+        res.status(200).json(ResponseFactory.success(propuesta))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener la propuesta',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener la propuesta', error.message))
     }
 }
 
@@ -64,10 +44,9 @@ export const createPropuesta = async (req, res) => {
 
         // Validar que los campos requeridos estén presentes
         if (!titulo || !descripcion || !barrio || !categoria) {
-            return res.status(400).json({
-                success: false,
-                message: 'Todos los campos son requeridos: titulo, descripcion, barrio, categoria'
-            })
+            return res.status(400).json(ResponseFactory.badRequest(
+                'Todos los campos son requeridos: titulo, descripcion, barrio, categoria'
+            ))
         }
 
         // Crear nueva propuesta
@@ -81,26 +60,16 @@ export const createPropuesta = async (req, res) => {
         // Guardar en la base de datos
         const propuestaGuardada = await nuevaPropuesta.save()
 
-        res.status(201).json({
-            success: true,
-            message: 'Propuesta creada exitosamente',
-            data: propuestaGuardada
-        })
+        res.status(201).json(ResponseFactory.success(propuestaGuardada, 'Propuesta creada exitosamente'))
     } catch (error) {
         // Si es error de validación de Mongoose
         if (error.name === 'ValidationError') {
-            return res.status(400).json({
-                success: false,
-                message: 'Error de validación',
-                errors: Object.values(error.errors).map(err => err.message)
-            })
+            return res.status(400).json(ResponseFactory.validationError(
+                Object.values(error.errors).map(err => err.message)
+            ))
         }
 
-        res.status(500).json({
-            success: false,
-            message: 'Error al crear la propuesta',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al crear la propuesta', error.message))
     }
 }
 
@@ -112,10 +81,7 @@ export const updatePropuesta = async (req, res) => {
 
         // Validar si el ID es válido
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta no válido'))
         }
 
         // Buscar y actualizar la propuesta
@@ -129,32 +95,19 @@ export const updatePropuesta = async (req, res) => {
         )
 
         if (!propuestaActualizada) {
-            return res.status(404).json({
-                success: false,
-                message: 'Propuesta no encontrada'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Propuesta no encontrada'))
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Propuesta actualizada exitosamente',
-            data: propuestaActualizada
-        })
+        res.status(200).json(ResponseFactory.success(propuestaActualizada, 'Propuesta actualizada exitosamente'))
     } catch (error) {
         // Si es error de validación de Mongoose
         if (error.name === 'ValidationError') {
-            return res.status(400).json({
-                success: false,
-                message: 'Error de validación',
-                errors: Object.values(error.errors).map(err => err.message)
-            })
+            return res.status(400).json(ResponseFactory.validationError(
+                Object.values(error.errors).map(err => err.message)
+            ))
         }
 
-        res.status(500).json({
-            success: false,
-            message: 'Error al actualizar la propuesta',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al actualizar la propuesta', error.message))
     }
 }
 
@@ -165,33 +118,19 @@ export const deletePropuesta = async (req, res) => {
 
         // Validar si el ID es válido
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta no válido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta no válido'))
         }
 
         // Buscar y eliminar la propuesta
         const propuestaEliminada = await Propuesta.findByIdAndDelete(id)
 
         if (!propuestaEliminada) {
-            return res.status(404).json({
-                success: false,
-                message: 'Propuesta no encontrada'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Propuesta no encontrada'))
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Propuesta eliminada exitosamente',
-            data: propuestaEliminada
-        })
+        res.status(200).json(ResponseFactory.success(propuestaEliminada, 'Propuesta eliminada exitosamente'))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al eliminar la propuesta',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al eliminar la propuesta', error.message))
     }
 }
 
@@ -208,17 +147,8 @@ export const getPropuestasFiltradas = async (req, res) => {
 
         const propuestas = await Propuesta.find(filtro)
 
-        res.status(200).json({
-            success: true,
-            count: propuestas.length,
-            filtros: filtro,
-            data: propuestas
-        })
+        res.status(200).json(ResponseFactory.successWithFilters(propuestas, filtro))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener las propuestas filtradas',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener las propuestas filtradas', error.message))
     }
 }

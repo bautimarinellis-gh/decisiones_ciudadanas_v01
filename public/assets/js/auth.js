@@ -16,6 +16,74 @@ function initRegisterForm() {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
 
+    // Elementos de requisitos de contraseña
+    const requirements = {
+        length: document.getElementById('req-length'),
+        uppercase: document.getElementById('req-uppercase'),
+        lowercase: document.getElementById('req-lowercase'),
+        number: document.getElementById('req-number'),
+        special: document.getElementById('req-special')
+    };
+
+    // Validación de contraseña en tiempo real
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        validatePassword(password);
+        if (confirmPasswordInput.value) {
+            validatePasswordMatch();
+        }
+    });
+
+    // Validación de confirmación de contraseña
+    confirmPasswordInput.addEventListener('blur', function() {
+        validatePasswordMatch();
+    });
+
+    confirmPasswordInput.addEventListener('input', function() {
+        if (this.value) {
+            validatePasswordMatch();
+        }
+    });
+
+    // Función para validar contraseña
+    function validatePassword(password) {
+        const validations = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        // Actualizar indicadores visuales
+        Object.keys(validations).forEach(key => {
+            const element = requirements[key];
+            if (element) {
+                if (validations[key]) {
+                    element.classList.add('valid');
+                } else {
+                    element.classList.remove('valid');
+                }
+            }
+        });
+
+        return Object.values(validations).every(valid => valid);
+    }
+
+    // Función para validar que las contraseñas coincidan
+    function validatePasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (confirmPassword && password !== confirmPassword) {
+            showFieldError(confirmPasswordInput, 'Las contraseñas no coinciden');
+            return false;
+        } else {
+            clearFieldError(confirmPasswordInput);
+            return true;
+        }
+    }
+
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -47,10 +115,19 @@ function initRegisterForm() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                showSuccessMessage('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
+                // Guardar token y datos del usuario para auto-login
+                localStorage.setItem('authToken', data.data.token);
+                localStorage.setItem('userData', JSON.stringify(data.data.user));
+                
+                showSuccessMessage('¡Cuenta creada exitosamente! Redirigiendo...');
                 
                 setTimeout(() => {
-                    window.location.href = '/login.html';
+                    // Redirigir directamente al dashboard según el rol
+                    if (data.data.user.rol === 'admin') {
+                        window.location.href = '/admin/dashboard.html';
+                    } else {
+                        window.location.href = '/ciudadano/dashboard.html';
+                    }
                 }, 2000);
             } else {
                 showErrorMessage(data.message || 'Error al crear la cuenta');
@@ -60,16 +137,6 @@ function initRegisterForm() {
             showErrorMessage('Error de conexión. Intenta nuevamente.');
         } finally {
             setFormLoading(false);
-        }
-    });
-
-    confirmPasswordInput.addEventListener('blur', function() {
-        validatePasswordMatch();
-    });
-
-    passwordInput.addEventListener('input', function() {
-        if (confirmPasswordInput.value) {
-            validatePasswordMatch();
         }
     });
 }
@@ -104,13 +171,13 @@ function initLoginForm() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userData', JSON.stringify(data.user));
+                localStorage.setItem('authToken', data.data.token);
+                localStorage.setItem('userData', JSON.stringify(data.data.user));
                 
                 showSuccessMessage('¡Inicio de sesión exitoso! Redirigiendo...');
                 
                 setTimeout(() => {
-                    if (data.user.rol === 'admin') {
+                    if (data.data.user.rol === 'admin') {
                         window.location.href = '/admin/dashboard.html';
                     } else {
                         window.location.href = '/ciudadano/dashboard.html';
@@ -171,9 +238,23 @@ function validateRegisterForm() {
     if (!password.value) {
         showFieldError(password, 'La contraseña es obligatoria');
         isValid = false;
-    } else if (password.value.length < 6) {
-        showFieldError(password, 'La contraseña debe tener al menos 6 caracteres');
+    } else if (password.value.length < 8) {
+        showFieldError(password, 'La contraseña debe tener al menos 8 caracteres');
         isValid = false;
+    } else {
+        // Validar requisitos de contraseña
+        const validations = {
+            length: password.value.length >= 8,
+            uppercase: /[A-Z]/.test(password.value),
+            lowercase: /[a-z]/.test(password.value),
+            number: /\d/.test(password.value),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password.value)
+        };
+        
+        if (!Object.values(validations).every(valid => valid)) {
+            showFieldError(password, 'La contraseña no cumple con todos los requisitos de seguridad');
+            isValid = false;
+        }
     }
 
     if (!confirmPassword.value) {

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import comentarioSchema from '../models/comentarioSchema.js'
+import { ResponseFactory } from '../utils/responseFactory.js'
 
 // Crear el modelo de Mongoose
 const Comentario = mongoose.model('Comentario', comentarioSchema)
@@ -12,18 +13,12 @@ export const crearComentario = async (req, res) => {
 
         // Validar que los campos requeridos estén presentes
         if (!propuestaId || !contenido) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta y contenido son requeridos'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta y contenido son requeridos'))
         }
 
         // Validar que el ID de propuesta sea válido
         if (!mongoose.Types.ObjectId.isValid(propuestaId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta inválido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta inválido'))
         }
 
         // Verificar que la propuesta existe
@@ -31,10 +26,7 @@ export const crearComentario = async (req, res) => {
         const propuesta = await Propuesta.findById(propuestaId)
         
         if (!propuesta) {
-            return res.status(404).json({
-                success: false,
-                message: 'Propuesta no encontrada'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Propuesta no encontrada'))
         }
 
         // Crear el comentario
@@ -51,28 +43,18 @@ export const crearComentario = async (req, res) => {
         const comentarioCompleto = await Comentario.findById(comentarioGuardado._id)
             .populate('usuarioId', 'nombreCompleto email')
 
-        res.status(201).json({
-            success: true,
-            message: 'Comentario creado exitosamente',
-            data: comentarioCompleto
-        })
+        res.status(201).json(ResponseFactory.success(comentarioCompleto, 'Comentario creado exitosamente'))
 
     } catch (error) {
         // Error de validación
         if (error.name === 'ValidationError') {
-            return res.status(400).json({
-                success: false,
-                message: 'Error de validación',
-                errors: Object.values(error.errors).map(err => err.message)
-            })
+            return res.status(400).json(ResponseFactory.validationError(
+                Object.values(error.errors).map(err => err.message)
+            ))
         }
 
         // Error interno del servidor
-        res.status(500).json({
-            success: false,
-            message: 'Error al crear el comentario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al crear el comentario', error.message))
     }
 }
 
@@ -83,10 +65,7 @@ export const getComentariosPorPropuesta = async (req, res) => {
 
         // Validar que el ID sea válido
         if (!mongoose.Types.ObjectId.isValid(propuestaId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta inválido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta inválido'))
         }
 
         // Obtener comentarios y popular información del usuario
@@ -94,18 +73,10 @@ export const getComentariosPorPropuesta = async (req, res) => {
             .populate('usuarioId', 'nombreCompleto email')
             .sort({ fechaCreacion: -1 }) // Más recientes primero
 
-        res.status(200).json({
-            success: true,
-            count: comentarios.length,
-            data: comentarios
-        })
+        res.status(200).json(ResponseFactory.successWithCount(comentarios))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener los comentarios',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener los comentarios', error.message))
     }
 }
 
@@ -117,44 +88,28 @@ export const eliminarComentario = async (req, res) => {
 
         // Validar que el ID sea válido
         if (!mongoose.Types.ObjectId.isValid(comentarioId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de comentario inválido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de comentario inválido'))
         }
 
         // Buscar el comentario
         const comentario = await Comentario.findById(comentarioId)
 
         if (!comentario) {
-            return res.status(404).json({
-                success: false,
-                message: 'Comentario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Comentario no encontrado'))
         }
 
         // Verificar que el comentario pertenece al usuario logueado
         if (comentario.usuarioId.toString() !== usuarioId) {
-            return res.status(403).json({
-                success: false,
-                message: 'No tienes permisos para eliminar este comentario'
-            })
+            return res.status(403).json(ResponseFactory.forbidden('No tienes permisos para eliminar este comentario'))
         }
 
         // Eliminar el comentario
         await Comentario.findByIdAndDelete(comentarioId)
 
-        res.status(200).json({
-            success: true,
-            message: 'Comentario eliminado exitosamente'
-        })
+        res.status(200).json(ResponseFactory.success(null, 'Comentario eliminado exitosamente'))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al eliminar el comentario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al eliminar el comentario', error.message))
     }
 }
 
@@ -165,29 +120,19 @@ export const getEstadisticasComentarios = async (req, res) => {
 
         // Validar que el ID sea válido
         if (!mongoose.Types.ObjectId.isValid(propuestaId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID de propuesta inválido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('ID de propuesta inválido'))
         }
 
         // Contar comentarios totales
         const totalComentarios = await Comentario.countDocuments({ propuestaId })
 
-        res.status(200).json({
-            success: true,
-            data: {
-                propuestaId,
-                totalComentarios
-            }
-        })
+        res.status(200).json(ResponseFactory.success({
+            propuestaId,
+            totalComentarios
+        }))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener estadísticas de comentarios',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener estadísticas de comentarios', error.message))
     }
 }
 
@@ -201,17 +146,9 @@ export const getComentariosUsuario = async (req, res) => {
             .populate('propuestaId', 'titulo categoria barrio estado')
             .sort({ fechaCreacion: -1 }) // Más recientes primero
 
-        res.status(200).json({
-            success: true,
-            count: comentarios.length,
-            data: comentarios
-        })
+        res.status(200).json(ResponseFactory.successWithCount(comentarios))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener los comentarios del usuario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener los comentarios del usuario', error.message))
     }
 }

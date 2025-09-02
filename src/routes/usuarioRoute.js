@@ -23,8 +23,6 @@ router.get('/filtrar', authenticateToken, requireAdmin, getUsuariosFiltrados)
 // GET /api/usuarios/:id - Obtener un usuario por ID (solo admins)
 router.get('/:id', authenticateToken, requireAdmin, getUsuarioById)
 
-
-
 // PUT /api/usuarios/:id - Actualizar un usuario (solo admins)
 router.put('/:id', authenticateToken, requireAdmin, updateUsuario)
 

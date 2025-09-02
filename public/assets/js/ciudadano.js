@@ -41,8 +41,15 @@ function updateUserInfo(userData) {
     const userInitials = document.getElementById('userInitials');
     const welcomeMessage = document.getElementById('welcomeMessage');
 
-    if (userName) userName.textContent = userData.nombreCompleto;
-    if (welcomeMessage) welcomeMessage.textContent = `¡Bienvenido, ${userData.nombreCompleto.split(' ')[0]}!`;
+    if (userName) {
+        userName.textContent = userData.nombreCompleto;
+    }
+    
+    if (welcomeMessage) {
+        const primerNombre = userData.nombreCompleto.split(' ')[0];
+        const mensajeBienvenida = `¡Bienvenido/a, ${primerNombre}!`;
+        welcomeMessage.textContent = mensajeBienvenida;
+    }
     
     if (userInitials) {
         const initials = userData.nombreCompleto

@@ -1,0 +1,293 @@
+/* Optimizaciones específicas para dispositivos móviles */
+
+/* Mejoras para pantallas pequeñas */
+@media (max-width: 480px) {
+    /* Ajustar espaciado para móviles */
+    .hero {
+        padding: 30px 0;
+        min-height: 60vh;
+    }
+    
+    .hero-title {
+        font-size: 26px;
+        line-height: 1.1;
+    }
+    
+    .hero-description {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    /* Optimizar grid para móviles */
+    .steps-grid,
+    .benefits-grid {
+        gap: 16px;
+    }
+    
+    .step,
+    .benefit {
+        padding: 16px;
+        margin-bottom: 8px;
+    }
+    
+    /* Mejorar legibilidad en móviles */
+    .section-title {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    
+    .section-subtitle {
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+    
+    /* Optimizar botones para touch */
+    .btn {
+        min-height: 48px;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+    
+    /* Mejorar navegación móvil */
+    .nav-container {
+        height: 56px;
+    }
+    
+    .nav-toggle {
+        padding: 12px;
+    }
+    
+    .nav-toggle span {
+        width: 24px;
+        height: 3px;
+    }
+}
+
+/* Optimizaciones para tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+    .hero {
+        padding: 50px 0;
+        min-height: 70vh;
+    }
+    
+    .hero-title {
+        font-size: 32px;
+    }
+    
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Mejoras para dispositivos con pantalla táctil */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área de toque */
+    .nav-link,
+    .faq-question {
+        min-height: 48px;
+        padding: 12px 16px;
+    }
+    
+    /* Mejorar feedback táctil */
+    .btn:active,
+    .nav-link:active,
+    .faq-question:active {
+        background-color: rgba(66, 133, 244, 0.1);
+        transform: scale(0.98);
+        transition: all 0.1s ease;
+    }
+    
+    /* Deshabilitar hover en dispositivos táctiles */
+    .btn:hover,
+    .nav-link:hover,
+    .step:hover,
+    .benefit:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* Optimizaciones para dispositivos de baja resolución */
+@media (-webkit-max-device-pixel-ratio: 1.5) {
+    .logo-icon,
+    .logo-icon-large,
+    .step-icon,
+    .benefit-icon {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Mejoras para dispositivos con pantalla de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .logo-icon,
+    .logo-icon-large,
+    .step-icon,
+    .benefit-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Optimizaciones para dispositivos con memoria limitada */
+@media (max-width: 768px) {
+    /* Reducir sombras para mejor performance */
+    .step,
+    .benefit,
+    .faq-item {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Simplificar transiciones */
+    .step,
+    .benefit {
+        transition: transform 0.2s ease;
+    }
+    
+    /* Reducir animaciones complejas */
+    .logo-glow::before {
+        display: none;
+    }
+}
+
+/* Mejoras para dispositivos con conexión lenta */
+@media (prefers-reduced-data: reduce) {
+    /* Reducir efectos visuales */
+    .step:hover,
+    .benefit:hover {
+        transform: none;
+    }
+    
+    /* Simplificar gradientes */
+    .logo-glow::before {
+        background: rgba(66, 133, 244, 0.05);
+    }
+}
+
+/* Optimizaciones para dispositivos con batería baja */
+@media (prefers-reduced-motion: reduce) {
+    /* Deshabilitar animaciones */
+    .step,
+    .benefit,
+    .faq-item {
+        transition: none;
+    }
+    
+    .nav-menu {
+        transition: none;
+    }
+    
+    .coming-soon-notification {
+        transition: none;
+    }
+}
+
+/* Mejoras para dispositivos con orientación landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        min-height: 50vh;
+        padding: 30px 0;
+    }
+    
+    .hero-title {
+        font-size: 28px;
+    }
+    
+    .hero-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .logo-icon-large {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+}
+
+/* Optimizaciones para dispositivos con pantalla ultra-wide */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero-container {
+        max-width: 1000px;
+    }
+    
+    .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 48px;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+}
+
+/* Mejoras para dispositivos con preferencia de contraste alto */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 2px solid currentColor;
+    }
+    
+    .step,
+    .benefit,
+    .faq-item {
+        border: 2px solid var(--border-color);
+    }
+    
+    .nav-link {
+        text-decoration: underline;
+    }
+}
+
+/* Optimizaciones para dispositivos con preferencia de color reducido */
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-light: #f8f9fa;
+        --background-white: #ffffff;
+        --text-primary: #212529;
+        --text-secondary: #6c757d;
+        --text-muted: #adb5bd;
+        --border-color: #dee2e6;
+        --border-light: #e9ecef;
+    }
+}
+
+/* Mejoras para el focus visible (accesibilidad) */
+.nav-link:focus-visible,
+.btn:focus-visible,
+.faq-question:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Optimizaciones para dispositivos con pantalla táctil */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área de toque para elementos interactivos */
+    .nav-toggle {
+        padding: 16px;
+        margin: -8px;
+    }
+    
+    .nav-toggle span {
+        width: 28px;
+        height: 3px;
+    }
+    
+    /* Mejorar feedback visual para toques */
+    .btn:active,
+    .nav-link:active,
+    .faq-question:active {
+        background-color: rgba(66, 133, 244, 0.15);
+        transform: scale(0.96);
+    }
+}

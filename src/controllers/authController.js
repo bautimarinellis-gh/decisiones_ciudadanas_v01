@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import usuarioSchema from '../models/usuarioSchema.js'
 import { sendPasswordResetEmail } from '../services/emailService.js'
+import { ResponseFactory } from '../utils/responseFactory.js'
 
 // Crear el modelo de Mongoose
 const Usuario = mongoose.model('Usuario', usuarioSchema)
@@ -32,18 +33,14 @@ export const register = async (req, res) => {
 
         // Validar que los campos requeridos estén presentes
         if (!nombreCompleto || !dni || !email || !barrio || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Todos los campos son requeridos: nombreCompleto, dni, email, barrio, password'
-            })
+            return res.status(400).json(ResponseFactory.badRequest(
+                'Todos los campos son requeridos: nombreCompleto, dni, email, barrio, password'
+            ))
         }
 
         // Verificar que las contraseñas coincidan
         if (confirmPassword && password !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Las contraseñas no coinciden'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Las contraseñas no coinciden'))
         }
 
         // Verificar si el usuario ya existe
@@ -53,10 +50,7 @@ export const register = async (req, res) => {
 
         if (usuarioExistente) {
             const campo = usuarioExistente.email === email ? 'email' : 'DNI'
-            return res.status(400).json({
-                success: false,
-                message: `Ya existe un usuario con ese ${campo}`
-            })
+            return res.status(400).json(ResponseFactory.badRequest(`Ya existe un usuario con ese ${campo}`))
         }
 
         // Hashear la contraseña
@@ -82,34 +76,23 @@ export const register = async (req, res) => {
         const usuarioRespuesta = usuarioGuardado.toObject()
         delete usuarioRespuesta.password
 
-        res.status(201).json({
-            success: true,
-            message: 'Usuario registrado exitosamente',
+        res.status(201).json(ResponseFactory.success({
             token,
             user: usuarioRespuesta
-        })
+        }, 'Usuario registrado exitosamente'))
     } catch (error) {
         if (error.name === 'ValidationError') {
-            return res.status(400).json({
-                success: false,
-                message: 'Error de validación',
-                errors: Object.values(error.errors).map(err => err.message)
-            })
+            return res.status(400).json(ResponseFactory.validationError(
+                Object.values(error.errors).map(err => err.message)
+            ))
         }
 
         if (error.code === 11000) {
             const campo = Object.keys(error.keyValue)[0]
-            return res.status(400).json({
-                success: false,
-                message: `Ya existe un usuario con ese ${campo}`
-            })
+            return res.status(400).json(ResponseFactory.badRequest(`Ya existe un usuario con ese ${campo}`))
         }
 
-        res.status(500).json({
-            success: false,
-            message: 'Error al registrar el usuario',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al registrar el usuario', error.message))
     }
 }
 
@@ -120,10 +103,7 @@ export const login = async (req, res) => {
 
         // Validar que los campos requeridos estén presentes
         if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Email y contraseña son requeridos'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Email y contraseña son requeridos'))
         }
 
         // Buscar usuario por email y que esté activo
@@ -133,20 +113,14 @@ export const login = async (req, res) => {
         })
 
         if (!usuario) {
-            return res.status(401).json({
-                success: false,
-                message: 'Credenciales inválidas'
-            })
+            return res.status(401).json(ResponseFactory.unauthorized('Credenciales inválidas'))
         }
 
         // Verificar la contraseña
         const passwordValida = await bcrypt.compare(password, usuario.password)
 
         if (!passwordValida) {
-            return res.status(401).json({
-                success: false,
-                message: 'Credenciales inválidas'
-            })
+            return res.status(401).json(ResponseFactory.unauthorized('Credenciales inválidas'))
         }
 
         // Generar token JWT
@@ -156,18 +130,12 @@ export const login = async (req, res) => {
         const usuarioRespuesta = usuario.toObject()
         delete usuarioRespuesta.password
 
-        res.status(200).json({
-            success: true,
-            message: 'Login exitoso',
+        res.status(200).json(ResponseFactory.success({
             token,
             user: usuarioRespuesta
-        })
+        }, 'Login exitoso'))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error en el login',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error en el login', error.message))
     }
 }
 
@@ -178,22 +146,12 @@ export const getProfile = async (req, res) => {
         const usuario = await Usuario.findById(req.user.userId).select('-password')
 
         if (!usuario || !usuario.activo) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
-        res.status(200).json({
-            success: true,
-            data: usuario
-        })
+        res.status(200).json(ResponseFactory.success(usuario))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener el perfil',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al obtener el perfil', error.message))
     }
 }
 
@@ -204,23 +162,12 @@ export const verifyToken = async (req, res) => {
         const usuario = await Usuario.findById(req.user.userId).select('-password')
 
         if (!usuario || !usuario.activo) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Token válido',
-            user: usuario
-        })
+        res.status(200).json(ResponseFactory.success(usuario, 'Token válido'))
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al verificar el token',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al verificar el token', error.message))
     }
 }
 
@@ -232,54 +179,38 @@ export const changePassword = async (req, res) => {
 
         // Validar campos requeridos
         if (!currentPassword || !newPassword || !confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Todos los campos son requeridos'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Todos los campos son requeridos'))
         }
 
         // Verificar que las nuevas contraseñas coincidan
         if (newPassword !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Las contraseñas nuevas no coinciden'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Las contraseñas nuevas no coinciden'))
         }
 
         // Validar fortaleza de la nueva contraseña
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/
         if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({
-                success: false,
-                message: 'La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'
-            })
+            return res.status(400).json(ResponseFactory.badRequest(
+                'La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'
+            ))
         }
 
         // Buscar el usuario
         const usuario = await Usuario.findById(userId)
         if (!usuario || !usuario.activo) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            })
+            return res.status(404).json(ResponseFactory.notFound('Usuario no encontrado'))
         }
 
         // Verificar contraseña actual
         const currentPasswordValid = await bcrypt.compare(currentPassword, usuario.password)
         if (!currentPasswordValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'La contraseña actual es incorrecta'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('La contraseña actual es incorrecta'))
         }
 
         // Verificar que la nueva contraseña sea diferente a la actual
         const isSamePassword = await bcrypt.compare(newPassword, usuario.password)
         if (isSamePassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'La nueva contraseña debe ser diferente a la actual'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('La nueva contraseña debe ser diferente a la actual'))
         }
 
         // Hashear la nueva contraseña
@@ -292,17 +223,10 @@ export const changePassword = async (req, res) => {
             fechaActualizacion: new Date()
         })
 
-        res.status(200).json({
-            success: true,
-            message: 'Contraseña cambiada exitosamente'
-        })
+        res.status(200).json(ResponseFactory.success(null, 'Contraseña cambiada exitosamente'))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al cambiar la contraseña',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al cambiar la contraseña', error.message))
     }
 }
 
@@ -315,10 +239,7 @@ export const requestPasswordReset = async (req, res) => {
         const { email } = req.body
 
         if (!email) {
-            return res.status(400).json({
-                success: false,
-                message: 'El email es requerido'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('El email es requerido'))
         }
 
         // Buscar usuario por email
@@ -330,10 +251,7 @@ export const requestPasswordReset = async (req, res) => {
 
         // Por seguridad, siempre responder exitosamente aunque el email no exista
         if (!usuario) {
-            return res.status(200).json({
-                success: true,
-                message: 'Si el email existe, se ha enviado un enlace de recuperación'
-            })
+            return res.status(200).json(ResponseFactory.success(null, 'Si el email existe, se ha enviado un enlace de recuperación'))
         }
 
         // Generar token de reset
@@ -357,25 +275,15 @@ export const requestPasswordReset = async (req, res) => {
                 resetPasswordExpiry: undefined
             })
             
-            return res.status(500).json({
-                success: false,
-                message: 'Error al enviar el email de recuperación. Intenta de nuevo más tarde.'
-            })
+            return res.status(500).json(ResponseFactory.internalError('Error al enviar el email de recuperación. Intenta de nuevo más tarde.'))
         }
 
 
 
-        res.status(200).json({
-            success: true,
-            message: 'Se ha enviado un enlace de recuperación a tu email'
-        })
+        res.status(200).json(ResponseFactory.success(null, 'Se ha enviado un enlace de recuperación a tu email'))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al procesar la solicitud',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al procesar la solicitud', error.message))
     }
 }
 
@@ -385,27 +293,20 @@ export const resetPassword = async (req, res) => {
         const { token, newPassword, confirmPassword } = req.body
 
         if (!token || !newPassword || !confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Token, nueva contraseña y confirmación son requeridos'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Token, nueva contraseña y confirmación son requeridos'))
         }
 
         // Verificar que las contraseñas coincidan
         if (newPassword !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Las contraseñas no coinciden'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Las contraseñas no coinciden'))
         }
 
         // Validar fortaleza de la contraseña
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/
         if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({
-                success: false,
-                message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'
-            })
+            return res.status(400).json(ResponseFactory.badRequest(
+                'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'
+            ))
         }
 
         // Hashear el token para comparar con la base de datos
@@ -419,10 +320,7 @@ export const resetPassword = async (req, res) => {
         })
 
         if (!usuario) {
-            return res.status(400).json({
-                success: false,
-                message: 'Token inválido o expirado'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Token inválido o expirado'))
         }
 
         // Hashear la nueva contraseña
@@ -437,17 +335,10 @@ export const resetPassword = async (req, res) => {
             fechaActualizacion: new Date()
         })
 
-        res.status(200).json({
-            success: true,
-            message: 'Contraseña restablecida exitosamente'
-        })
+        res.status(200).json(ResponseFactory.success(null, 'Contraseña restablecida exitosamente'))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al restablecer la contraseña',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error al restablecer la contraseña', error.message))
     }
 }
 
@@ -457,10 +348,7 @@ export const logout = async (req, res) => {
         const token = req.headers.authorization?.replace('Bearer ', '')
         
         if (!token) {
-            return res.status(400).json({
-                success: false,
-                message: 'Token no proporcionado'
-            })
+            return res.status(400).json(ResponseFactory.badRequest('Token no proporcionado'))
         }
 
         // Agregar token a la blacklist
@@ -469,17 +357,10 @@ export const logout = async (req, res) => {
         // Limpiar tokens expirados de la blacklist (opcional, para optimizar memoria)
         cleanExpiredTokensFromBlacklist()
 
-        res.status(200).json({
-            success: true,
-            message: 'Logout exitoso'
-        })
+        res.status(200).json(ResponseFactory.success(null, 'Logout exitoso'))
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error en el logout',
-            error: error.message
-        })
+        res.status(500).json(ResponseFactory.internalError('Error en el logout', error.message))
     }
 }
 
